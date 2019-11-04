@@ -24,7 +24,7 @@ const Products = (props) => {
 const Nav = () => {
   return (
       <nav>
-          <Link to='companies'>Companies</Link>
+          <Link to='companies' >Companies</Link>
           <Link to='products'>Products</Link>
       </nav>
   )
@@ -66,18 +66,27 @@ class ToBeRendered extends Component {
     }
     companiesArray = () => {
         const { companies, offerings, products } = this.props;
+
         let collection = products.map(element => {
-            
+            let company = offerings.map(element => {
+                element.productId === companies.id
+            })
             let offers = offerings
             .filter(finder => finder.productId === element.id)
-            .map(offer => <li key={offer.id}>{offer.price}</li>);
+            .map(offer => offer.price);
+
             return (
             <div>
                 <h3>Product Name: {element.name}</h3>
-                <p>Suggested Price: {element.suggestedPrice}</p>
-                <ul>
-            Price(s): {offers}
-                </ul>
+                <p>Suggested Price: ${element.suggestedPrice}</p>
+                <p>
+                Average Price: ${offers.reduce((a,b)=> {return a+b/offers.length}).toFixed(2)}
+                </p>
+                <p>
+                Lowest Price: ${offers.sort().slice(0,1)} offered by {"Enter Company Name"}
+                </p>
+                <hr></hr>
+
             </div>);
         });
         return collection
