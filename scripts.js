@@ -40,21 +40,58 @@ class App extends Component {
   async componentDidMount() {
       const companies = (await axios.get('https://acme-users-api-rev.herokuapp.com/api/companies')).data;
       const products = (await axios.get('https://acme-users-api-rev.herokuapp.com/api/products')).data;
-      this.setState ({ companies, products });
-      console.log(this.state.products);
+      const offerings = (await axios.get('https://acme-users-api-rev.herokuapp.com/api/offerings')).data;
+
+      this.setState ({ companies, products, offerings });
+      console.log(this.state.offerings);
   }
     render(){
-        const { companies, products} = this.state;
+        const { companies, products, offerings} = this.state;
       return (
       <HashRouter>
           <Route component={ Nav } />
           <Switch>
             <Route path='/companies' component={ Companies } />
-              <Route path='/products' render ={() => (<Products products={products}/>)} />
+              <Route path='/products' render ={() => (<ToBeRendered companies={companies} products={products} offerings={offerings} />)} />
               <Redirect to='/companies' />
           </Switch>
       </HashRouter>
   )
 }
 }
+
+class ToBeRendered extends Component {
+    constructor(props) {
+        super(props);
+    }
+    companiesArray = () => {
+        const { companies, offerings, products } = this.props;
+        let collection = products.map(element => {
+            
+            let offers = offerings
+            .filter(finder => finder.productId === element.id)
+            .map(offer => <li key={offer.id}>{offer.price}</li>);
+            return (
+            <div>
+                <h3>Product Name: {element.name}</h3>
+                <p>Suggested Price: {element.suggestedPrice}</p>
+                <ul>
+            Price(s): {offers}
+                </ul>
+            </div>);
+        });
+        return collection
+    }
+    render() {
+
+        return (
+        <div>
+        
+        {this.companiesArray()}
+        </div>
+        )
+    }
+}
+
+
 render(<App />, root);
