@@ -68,9 +68,7 @@ class ToBeRendered extends Component {
         const { companies, offerings, products } = this.props;
 
         let collection = products.map(element => {
-            let company = offerings.map(element => {
-                element.productId === companies.id
-            })
+
             let offers = offerings
             .filter(finder => finder.productId === element.id)
             .map(offer => offer.price);
